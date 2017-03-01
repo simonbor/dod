@@ -1,0 +1,51 @@
+﻿@model List<WipDod.Models.Agent>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dod Agent Manager</title>
+	<link href="Content/bootstrap.min.css" rel="stylesheet">
+	<link href="Content/wipDod.css" rel="stylesheet">
+	<script src="scripts/knockout-3.4.1.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<div>
+	<div class="container">
+		<div class="form-signin">
+			<h2 class="form-signin-heading">Please choose dates</h2>
+			<input type="date" data-bind="value : startDate" class="form-control" placeholder="Start date" required>
+			<input type="date" data-bind="value : endDate" class="form-control" placeholder="End date" required>
+			<div class="checkbox">
+			</div>
+			<button class="btn btn-lg btn-primary btn-block" data-bind="click: getAgents">Go</button>
+			<div class="checkbox">
+			<input type="text" data-bind="value:filter,valueUpdate: 'keyup'" class="form-control" placeholder="Filter agents by name" >
+			</div>
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th>#</th>
+					<th>Full Name</th>
+					<th>Average Grade</th>
+				</tr>
+				</thead> 
+				<tbody data-bind="foreach: filteredAgents">
+				<tr>
+					<th scope="row" data-bind="text: $index"></th>
+					<td data-bind="text: FullName"></td>
+					<td data-bind="text: AvgGrade"></td>
+				</tr> 
+				</tbody>
+			</table>
+		</div>
+	</div> <!-- /container -->
+  </div>
+
+<script src="scripts/jquery-1.9.1.min.js"></script>
+<script src="scripts/bootstrap.min.js"></script>
+<script src="scripts/wipDod.js"></script>
+
+</body>
+</html>
