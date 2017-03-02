@@ -1,5 +1,6 @@
 *.mdf 
 *.ldf
+*.txt
 obj
 bin
 fonts

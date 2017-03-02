@@ -26,17 +26,21 @@ namespace WipDod.Dal
                 new Operation{OperationId=1001,Name="Tzuk Eithan",TimeStamp=System.DateTime.Parse("2015-09-01 10:10:59"), Desc = "תיאור פעולה - טקסט ארוך"},
                 new Operation{OperationId=2002,Name="Amud Anan",TimeStamp=System.DateTime.Parse("2016-12-01")},
                 new Operation{OperationId=3003,Name="Oferet Yatzuka",TimeStamp=System.DateTime.Parse("2016-09-11")},
-                new Operation{OperationId=4004,Name="Livanon Shniya",TimeStamp=System.DateTime.Parse("2005-09-10")}
+                new Operation{OperationId=4004,Name="Livanon Shniya",TimeStamp=System.DateTime.Parse("2005-09-10")},
+                new Operation{OperationId=5005,Name="Patish Kaved",TimeStamp=System.DateTime.Parse("2016-03-05")},
+                new Operation{OperationId=6006,Name="Beita Hazaka",TimeStamp=System.DateTime.Parse("2016-09-10")},
             };
             operations.ForEach(s => context.Operations.Add(s));
             context.SaveChanges();
 
             var enrollments = new List<Enrollment>
             {
-                new Enrollment {AgentId = 1, OperationId = 1001, Grade = 10},
-                new Enrollment {AgentId = 1, OperationId = 4004, Grade = 8},
-                new Enrollment {AgentId = 1, OperationId = 2002, Grade = 1},
-                new Enrollment {AgentId = 1, OperationId = 3003, Grade = 9},
+                new Enrollment {AgentId = 1, OperationId = 1001, Grade = 1},
+                new Enrollment {AgentId = 1, OperationId = 4004, Grade = 1},
+                new Enrollment {AgentId = 1, OperationId = 2002, Grade = 10},
+                new Enrollment {AgentId = 1, OperationId = 5005, Grade = 1},
+                new Enrollment {AgentId = 1, OperationId = 6006, Grade = 10},
+                new Enrollment {AgentId = 1, OperationId = 3003, Grade = 10},
                 new Enrollment {AgentId = 3, OperationId = 3003, Grade = 3},
                 new Enrollment {AgentId = 3, OperationId = 2002, Grade = 3},
                 new Enrollment {AgentId = 3, OperationId = 1001, Grade = 3},
@@ -52,12 +56,12 @@ namespace WipDod.Dal
 	                @end nvarchar(20)
 				AS
 					SELECT agents.FullName, AVG(agents.Grade) AvgGrade
-					FROM (SELECT ag.Id, ag.FullName, enrol.Grade
-							from Agent ag join Enrollment enrol on ag.Id = enrol.AgentId
-								join Operation op on enrol.OperationId = op.OperationId
-							where op.TimeStamp between CAST(@start as datetime) and CAST(@end as datetime)) agents
+					FROM (SELECT ROW_NUMBER() OVER (PARTITION BY ag.Id order by op.[TimeStamp] desc) AS RowNumber, ag.Id, ag.FullName, enrol.Grade, op.TimeStamp
+						FROM Agent ag join Enrollment enrol on ag.Id = enrol.AgentId
+							join Operation op on enrol.OperationId = op.OperationId
+						WHERE op.TimeStamp between CAST(@start as datetime) and CAST(@end as datetime)) agents
+					WHERE RowNumber <= 3
 					GROUP BY agents.FullName
-
                 RETURN 0
             ");
         }
